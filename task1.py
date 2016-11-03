@@ -38,14 +38,19 @@ W_conv3 = weight_variable([3, 3, 64, 128])
 b_conv3 = bias_variable([128])
 h_conv3 = tf.nn.relu(conv2d(h_pool2, W_conv3) + b_conv3)
 
+W_conv41 = weight_variable([3, 3, 128, 128])
+b_conv41 = bias_variable([128])
+h_conv41 = tf.nn.relu(conv2d(h_conv3, W_conv41) + b_conv41)
+
 W_conv4 = weight_variable([3, 3, 128, 128])
 b_conv4 = bias_variable([128])
-h_conv4 = tf.nn.relu(conv2d(h_conv3, W_conv4) + b_conv4)
+h_conv4 = tf.nn.relu(conv2d(h_conv41, W_conv4) + b_conv4)
 h_pool4 = max_pool_2x2(h_conv4)
 
 W_conv5 = weight_variable([3, 3, 128, 256])
 b_conv5 = bias_variable([256])
 h_conv5 = tf.nn.relu(conv2d(h_pool4, W_conv5) + b_conv5)
+
 h_pool5 = max_pool_2x2(h_conv5)
 
 
@@ -93,9 +98,9 @@ sess.run(tf.initialize_all_variables())
 def start_t1(train_data, train_labels, validation_data, validation_labels, test_data, test_labels):
     train_tuple = zip(train_data, train_labels)
 
-    for i in range(1500):
+    for i in range(4500):
 
-        batch = random.sample(train_tuple, 32)
+        batch = random.sample(train_tuple, 8)
         batch_data = [zz[0] for zz in batch]
         batch_labels = [zz[1] for zz in batch]
 
