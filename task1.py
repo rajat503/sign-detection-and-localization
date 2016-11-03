@@ -93,9 +93,9 @@ sess.run(tf.initialize_all_variables())
 def start_t1(train_data, train_labels, validation_data, validation_labels, test_data, test_labels):
     train_tuple = zip(train_data, train_labels)
 
-    for i in range(6000):
+    for i in range(1500):
 
-        batch = random.sample(train_tuple, 8)
+        batch = random.sample(train_tuple, 32)
         batch_data = [zz[0] for zz in batch]
         batch_labels = [zz[1] for zz in batch]
 
@@ -109,13 +109,7 @@ def start_t1(train_data, train_labels, validation_data, validation_labels, test_
         if i%10 == 0 and i!=0:
             print "step", i, "loss", loss_val
 
-        if i < 5000:
-            _, loss_val, summary = sess.run([train_step, cross_entropy, merged], feed_dict={x:batch_data, y_: batch_labels, keep_prob: 0.5, learning_rate: 1e-4})
-        else:
-            if i < 10000:
-                _, loss_val, summary = sess.run([train_step, cross_entropy, merged], feed_dict={x:batch_data, y_: batch_labels, keep_prob: 0.5, learning_rate: 1e-5})
-            else:
-                _, loss_val, summary = sess.run([train_step, cross_entropy, merged], feed_dict={x:batch_data, y_: batch_labels, keep_prob: 0.5, learning_rate: 1e-6})
+        _, loss_val, summary = sess.run([train_step, cross_entropy, merged], feed_dict={x:batch_data, y_: batch_labels, keep_prob: 0.5, learning_rate: 1e-4})
 
         if i>100:
             train_writer.add_summary(summary, i)
