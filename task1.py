@@ -25,37 +25,39 @@ def max_pool_2x2(x):
 
 x_image = tf.reshape(x, [-1,128,128,3])
 
-W_conv1 = weight_variable([3, 3, 3, 32])
-b_conv1 = bias_variable([32])
+W_conv1 = weight_variable([3, 3, 3, 64])
+b_conv1 = bias_variable([64])
 h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)
 
-W_conv2 = weight_variable([3, 3, 32, 32])
-b_conv2 = bias_variable([32])
+W_conv2 = weight_variable([3, 3, 64, 64])
+b_conv2 = bias_variable([64])
 h_conv2 = tf.nn.relu(conv2d(h_conv1, W_conv2) + b_conv2)
 h_pool2 = max_pool_2x2(h_conv2)
 
-W_conv3 = weight_variable([3, 3, 32, 64])
-b_conv3 = bias_variable([64])
+W_conv3 = weight_variable([3, 3, 64, 128])
+b_conv3 = bias_variable([128])
 h_conv3 = tf.nn.relu(conv2d(h_pool2, W_conv3) + b_conv3)
 
-W_conv4 = weight_variable([3, 3, 64, 64])
-b_conv4 = bias_variable([64])
+W_conv4 = weight_variable([3, 3, 128, 128])
+b_conv4 = bias_variable([128])
 h_conv4 = tf.nn.relu(conv2d(h_conv3, W_conv4) + b_conv4)
 h_pool4 = max_pool_2x2(h_conv4)
 
-W_conv5 = weight_variable([3, 3, 64, 128])
-b_conv5 = bias_variable([128])
+W_conv5 = weight_variable([3, 3, 128, 256])
+b_conv5 = bias_variable([256])
 h_conv5 = tf.nn.relu(conv2d(h_pool4, W_conv5) + b_conv5)
+h_pool5 = max_pool_2x2(h_conv5)
 
-W_conv6 = weight_variable([3, 3, 128, 128])
-b_conv6 = bias_variable([128])
-h_conv6 = tf.nn.relu(conv2d(h_conv5, W_conv6) + b_conv6)
+
+W_conv6 = weight_variable([3, 3, 256, 256])
+b_conv6 = bias_variable([256])
+h_conv6 = tf.nn.relu(conv2d(h_pool5, W_conv6) + b_conv6)
 h_pool6 = max_pool_2x2(h_conv6)
 
 
-h_pool6_flat = tf.reshape(h_pool6, [-1, 16*16*128])
+h_pool6_flat = tf.reshape(h_pool6, [-1, 8*8*256])
 
-W_fc1 = weight_variable([16 * 16 * 128, 1024])
+W_fc1 = weight_variable([8 * 8 * 256, 1024])
 b_fc1 = bias_variable([1024])
 h_fc1 = tf.nn.relu(tf.matmul(h_pool6_flat, W_fc1) + b_fc1)
 h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
@@ -91,9 +93,9 @@ sess.run(tf.initialize_all_variables())
 def start_t1(train_data, train_labels, validation_data, validation_labels, test_data, test_labels):
     train_tuple = zip(train_data, train_labels)
 
-    for i in range(11000):
+    for i in range(6000):
 
-        batch = random.sample(train_tuple, 16)
+        batch = random.sample(train_tuple, 8)
         batch_data = [zz[0] for zz in batch]
         batch_labels = [zz[1] for zz in batch]
 

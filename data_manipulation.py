@@ -26,7 +26,7 @@ with open('trial_data/bounding_boxes.csv', 'rb') as csvfile:
             test_data.append(data_vector)
             test_labels.append(one_hot)
         else:
-            if user_id >12:
+            if user_id >14:
                 validation_data.append(data_vector)
                 validation_labels.append(one_hot)
             else:
