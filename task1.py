@@ -84,7 +84,7 @@ sess.run(tf.initialize_all_variables())
 def start_t1(train_data, train_labels, validation_data, validation_labels, test_data, test_labels):
     train_tuple = zip(train_data, train_labels)
 
-    for i in range(20000):
+    for i in range(5000):
 
         batch = random.sample(train_tuple, 16)
         batch_data = [zz[0] for zz in batch]
@@ -103,7 +103,7 @@ def start_t1(train_data, train_labels, validation_data, validation_labels, test_
         if i < 2000:
             _, loss_val, summary = sess.run([train_step, cross_entropy, merged], feed_dict={x:batch_data, y_: batch_labels, keep_prob: 0.5, learning_rate: 1e-4})
         else:
-            if i < 8000:
+            if i < 4000:
                 _, loss_val, summary = sess.run([train_step, cross_entropy, merged], feed_dict={x:batch_data, y_: batch_labels, keep_prob: 0.5, learning_rate: 1e-5})
             else:
                 _, loss_val, summary = sess.run([train_step, cross_entropy, merged], feed_dict={x:batch_data, y_: batch_labels, keep_prob: 0.5, learning_rate: 1e-6})
@@ -113,3 +113,29 @@ def start_t1(train_data, train_labels, validation_data, validation_labels, test_
 
 
     print("test accuracy %g"%accuracy.eval(feed_dict={x: test_data, y_: test_labels, keep_prob: 1.0}))
+
+    det, pred = sess.run([tf.argmax(y_conv,1), correct_prediction], feed_dict={x:  validation_data, y_: validation_labels, keep_prob: 1.0})
+
+    det1, pred1 = sess.run([tf.argmax(y_conv,1), correct_prediction], feed_dict={x:  test_data, y_: test_labels, keep_prob: 1.0})
+
+    print "Validation faults"
+    from skimage import io
+    import numpy as np
+    for i in range(len(pred)):
+        if pred[i]==False:
+            zx=np.array(validation_data[i])
+            zx=zx.reshape(128,128,3)
+            print "Predicted class", det[i]
+            print "Correct class", validation_labels[i]
+            img = io.imshow(zx)
+            io.show()
+
+    print "Test faults"
+    for i in range(len(pred1)):
+        if pred1[i]==False:
+            zx=np.array(test_data[i])
+            zx=zx.reshape(128,128,3)
+            print "Predicted class", det1[i]
+            print "Correct class", test_labels[i]
+            img = io.imshow(zx)
+            io.show()
