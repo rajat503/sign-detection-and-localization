@@ -3,7 +3,7 @@ import random
 
 sess = tf.InteractiveSession()
 
-x = tf.placeholder(tf.float32, shape=[None, 320*240*3])
+x = tf.placeholder(tf.float32, shape=[None, 240, 320, 3])
 y_ = tf.placeholder(tf.float32, shape=[None, 4])
 keep_prob = tf.placeholder(tf.float32)
 learning_rate = tf.placeholder(tf.float32)
@@ -22,11 +22,12 @@ def conv2d(x, W):
 def max_pool_2x2(x):
   return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
-x_image = tf.reshape(x, [-1,320,240,3])
+# x_image = tf.reshape(x, [-1,240,320,3])
+# x_image = tf.add(x, 0)
 
 W_conv1 = weight_variable([3, 3, 3, 16])
 b_conv1 = bias_variable([16])
-h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)
+h_conv1 = tf.nn.relu(conv2d(x, W_conv1) + b_conv1)
 h_pool1 = max_pool_2x2(h_conv1)
 
 W_conv2 = weight_variable([3, 3, 16, 16])
@@ -109,6 +110,7 @@ sess.run(tf.initialize_all_variables())
 def start_t1(train_data, train_labels, validation_data, validation_labels, test_data, test_labels):
     train_tuple = zip(train_data, train_labels)
 
+
     for i in range(30000):
 
         batch = random.sample(train_tuple, 32)
@@ -142,7 +144,10 @@ def start_t1(train_data, train_labels, validation_data, validation_labels, test_
         if i%10 == 0 and i!=0:
             print "step", i, "loss", loss_val
 
-        _, loss_val, summary, conv_out, xx,cc,vv,bb,mm = sess.run([train_step, loss, merged, y_conv_t, area_predicted, area_ground, overlap, union, iou], feed_dict={x:batch_data, y_: batch_labels, keep_prob: 0.8, learning_rate: 1e-4})
+        # if i<1500:
+        _, loss_val, summary, conv_out, xx,cc,vv,bb,mm = sess.run([train_step, loss, merged, y_conv_t, area_predicted, area_ground, overlap, union, iou], feed_dict={x:batch_data, y_: batch_labels, keep_prob: 0.5, learning_rate: 1e-3})
+        # else:
+        #     _, loss_val, summary, conv_out, xx,cc,vv,bb,mm = sess.run([train_step, loss, merged, y_conv_t, area_predicted, area_ground, overlap, union, iou], feed_dict={x:batch_data, y_: batch_labels, keep_prob: 0.8, learning_rate: 1e-4})
 
         if i%200 ==0:
             print "conv_predicted", conv_out
