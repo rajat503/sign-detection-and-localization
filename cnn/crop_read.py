@@ -5,6 +5,7 @@ import os
 import numpy as np
 from crop_classify import start_t1
 import sys
+from skimage.viewer import ImageViewer
 
 def train(user_list):
     train_data = []
@@ -14,22 +15,33 @@ def train(user_list):
     test_data = []
     test_labels = []
 
+    predicted_boxes = np.load("output.txt.npy")
+    predicted_boxes = predicted_boxes.astype(int)
+
+    count = 0
     for user in user_list:
         with open('../dataset/'+user+'/'+user+'_loc.csv', 'rb') as csvfile:
             x=csv.reader(csvfile)
             for row in x:
                 if row[0]=='image':
                     continue
+                user_id = int(user.split('_')[1])
                 image = io.imread('../dataset/'+row[0])
-                data_vector1 = image[int(row[2]):int(row[4]),int(row[1]):int(row[3])]
+
+                if user_id > 16:
+                    data_vector1 = image[predicted_boxes[count][1][0]:predicted_boxes[count][3][0],predicted_boxes[count][0][0]:predicted_boxes[count][2][0]]
+                    count = count + 1
+                else:
+                    data_vector1 = image[int(row[2]):int(row[4]),int(row[1]):int(row[3])]
+
                 data_vector = transform.resize(data_vector1, (128, 128))
+
                 one_hot = [0 for i in range(24)]
                 letter = (row[0].split('/')[1])[0]
                 label = ord(letter)-65
                 if letter > 'J':
                     label = label - 1
                 one_hot[int(label)]=1
-                user_id = int(user.split('_')[1])
                 if user_id > 16:
                     test_data.append(data_vector)
                     test_labels.append(one_hot)
