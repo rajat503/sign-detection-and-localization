@@ -4,7 +4,6 @@ import os
 import numpy as np
 from unified import start_t1
 import sys
-from skimage.viewer import ImageViewer
 
 def train(user_list):
     train_data = []
