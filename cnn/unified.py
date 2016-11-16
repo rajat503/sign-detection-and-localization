@@ -99,6 +99,9 @@ with tf.name_scope('loss'):
     tf.scalar_summary('error', loss)
 
 train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss)
+train_step_r = tf.train.AdamOptimizer(learning_rate).minimize(regression_loss)
+train_step_c = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy, var_list=[W_fc1_c, b_fc1_c, h_fc1_c, h_fc1_drop_c, W_fc2_c, b_fc2_c, h_fc2_c, h_fc2_drop_c, W_fc4_c, b_fc4_c, y_conv_c])
+
 
 with tf.name_scope('accuracy'):
     correct_prediction_r = tf.round(iou)
@@ -163,15 +166,17 @@ def start_t1(train_data, train_boxes, train_labels, validation_data, validation_
         if i%10 == 0 and i!=0:
             print "step", i, "loss", loss_val
 
-        # if i<1500:
-        _, loss_val, summary, conv_out, xx,cc,vv,bb,mm = sess.run([train_step, loss, merged, y_conv_t, area_predicted, area_ground, overlap, union, iou], feed_dict={x:batch_data, y_: batch_boxes, y_c: batch_labels, keep_prob: 0.5, learning_rate: 1e-4})
-        # else:
-        #     _, loss_val, summary, conv_out, xx,cc,vv,bb,mm = sess.run([train_step, loss, merged, y_conv_t, area_predicted, area_ground, overlap, union, iou], feed_dict={x:batch_data, y_: batch_labels, keep_prob: 0.8, learning_rate: 1e-4})
+        if i<10000:
+            # _, loss_val, summary, conv_out, xx,cc,vv,bb,mm = sess.run([train_step_r, regression_loss, merged, y_conv_t, area_predicted, area_ground, overlap, union, iou], feed_dict={x:batch_data, y_: batch_boxes, keep_prob: 0.5, learning_rate: 1e-3})
+            _, loss_val, summary  = sess.run([train_step_r, regression_loss, merged], feed_dict={x:batch_data, y_: batch_boxes, keep_prob: 0.5, learning_rate: 1e-3})
 
-        if i % 1000 ==0:
-            print "conv_predicted", conv_out
-            print "overlap", vv
-            print "iou", mm
+        else:
+            _, loss_val, summary = sess.run([train_step_c, loss, merged], feed_dict={x:batch_data, y_c: batch_labels, keep_prob: 0.5, learning_rate: 1e-4})
+
+        # if i % 1000 ==0:
+        #     print "conv_predicted", conv_out
+        #     print "overlap", vv
+        #     print "iou", mm
 
         if i>100:
             train_writer.add_summary(summary, i)
@@ -189,6 +194,8 @@ def start_t1(train_data, train_boxes, train_labels, validation_data, validation_
     # print va
     # print output[1:]
     # np.save("output.txt", output[1:])
+
+
 
 
     va = 0
