@@ -89,6 +89,8 @@ with g.as_default():
 
 
     initialize = tf.initialize_all_variables()
+    saver = tf.train.Saver()
+
 
 sess = tf.Session(graph=g)
 sess.run(initialize)
@@ -96,7 +98,7 @@ sess.run(initialize)
 def train(train_data, train_labels):
     train_tuple = zip(train_data, train_labels)
 
-    for i in range(30000):
+    for i in range(1):
 
         batch = random.sample(train_tuple, 32)
         batch_data = [zz[0] for zz in batch]
@@ -132,3 +134,11 @@ def test(image):
     conv_out = sess.run([y_conv_t], feed_dict={x: image_list, keep_prob: 1.0})
     predicted_box = np.array(conv_out).astype(int)
     return predicted_box[0]
+
+def save(file_name):
+    save_path = saver.save(sess, file_name)
+    print save_path
+
+def load(file_name):
+    saver.restore(sess, file_name)
+    print "Model restored"

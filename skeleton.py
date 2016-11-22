@@ -34,8 +34,6 @@ class GestureRecognizer(object):
 		wrapper.train_classifier(train_list, self.path)
 		wrapper.train_localizer(train_list, self.path)
 
-
-
 	def recognize_gesture(self, image):
 
 		"""
@@ -60,22 +58,19 @@ class GestureRecognizer(object):
 		# print labels
 		return (x1, y1, x2, y2), labels
 
-	# def translate_video(self, image_array):
-	#
-	# 	"""
-	# 		image_array : a list of images as described above.
-	# 					  can be of arbitrary length
-	#
-	# 		This function classifies the video into a 5 character string
-	#
-	# 		returns : word (a string of 5 characters)
-	# 				  no two consecutive characters are identical
-	# 	"""
-	#
-	# 	return word
+	def save_model(self):
+		wrapper.save_classifier("./models/classifier_model")
+		wrapper.save_localizer("./models/localizer_model")
 
+	def load_model(self):
+		wrapper.load_classifier("./models/classifier_model")
+		wrapper.load_localizer("./models/localizer_model")
+
+#
 # obj = GestureRecognizer('dataset/')
 # obj.train(['user_3','user_4', 'user_5','user_6','user_7','user_9','user_10', 'user_11', 'user_12', 'user_13'])
+# obj.save_model()
+# obj.load_model()
 # # obj.recognize_gesture(['user_17','user_18', 'user_19'])
 # image = io.imread('dataset/user_17/A0.jpg')
 # print obj.recognize_gesture(image)
