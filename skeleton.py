@@ -74,8 +74,8 @@ class GestureRecognizer(object):
 	#
 	# 	return word
 
-obj = GestureRecognizer('dataset/')
-obj.train(['user_3','user_4', 'user_5','user_6','user_7','user_9','user_10', 'user_11', 'user_12', 'user_13'])
-# obj.recognize_gesture(['user_17','user_18', 'user_19'])
-image = io.imread('dataset/user_17/A0.jpg')
-print obj.recognize_gesture(image)
+# obj = GestureRecognizer('dataset/')
+# obj.train(['user_3','user_4', 'user_5','user_6','user_7','user_9','user_10', 'user_11', 'user_12', 'user_13'])
+# # obj.recognize_gesture(['user_17','user_18', 'user_19'])
+# image = io.imread('dataset/user_17/A0.jpg')
+# print obj.recognize_gesture(image)
