@@ -96,7 +96,7 @@ sess.run(initialize)
 def train(train_data, train_labels):
     train_tuple = zip(train_data, train_labels)
 
-    for i in range(1):
+    for i in range(30000):
 
         batch = random.sample(train_tuple, 32)
         batch_data = [zz[0] for zz in batch]

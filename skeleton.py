@@ -53,10 +53,12 @@ class GestureRecognizer(object):
 
 		x1, y1, x2, y2 = wrapper.test_localizer(image)
 		conv_output = np.array(wrapper.test_classifier(image, x1, y1, x2, y2)).tolist()[0][0]
-		print conv_output
-		label = alphabet[conv_output.index(max(conv_output))]
-		# return (x1,y1,x2,y2), label
-		return (x1, y1, x2, y2), label
+		conv_tuples = [(conv_output[i], alphabet[i]) for i in xrange(len(conv_output))]
+		conv_tuples.sort(reverse=True)
+		labels = [conv_tuples[i][1] for i in xrange(5)]
+		# print conv_tuples
+		# print labels
+		return (x1, y1, x2, y2), labels
 
 	# def translate_video(self, image_array):
 	#
