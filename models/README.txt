@@ -1,1 +1,1 @@
-This directory contians any pre trained models 
+This directory contains any pre-trained models. 

@@ -4,7 +4,6 @@ import os
 import numpy as np
 import localization
 import sys
-from skimage.viewer import ImageViewer
 
 def train(user_list, path):
     train_data = []

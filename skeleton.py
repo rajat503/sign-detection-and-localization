@@ -3,6 +3,9 @@ from skimage import io
 from skimage import transform
 import os
 import numpy as np
+import gzip
+import pickle
+import json
 
 alphabet = "ABCDEFGHIKLMNOPQRSTUVWXY"
 
@@ -54,23 +57,22 @@ class GestureRecognizer(object):
 		conv_tuples = [(conv_output[i], alphabet[i]) for i in xrange(len(conv_output))]
 		conv_tuples.sort(reverse=True)
 		labels = [conv_tuples[i][1] for i in xrange(5)]
-		# print conv_tuples
-		# print labels
 		return (x1, y1, x2, y2), labels
 
-	def save_model(self):
+	def save_model(self, **params):
 		wrapper.save_classifier("./models/classifier_model")
 		wrapper.save_localizer("./models/localizer_model")
+		file_name = params['name']
+		pickle.dump(self, gzip.open(file_name, 'wb'))
 
-	def load_model(self):
+	@staticmethod
+	def load_model(**params):
 		wrapper.load_classifier("./models/classifier_model")
 		wrapper.load_localizer("./models/localizer_model")
+		file_name = params['name']
+		return pickle.load(gzip.open(file_name, 'rb'))
 
-#
-# obj = GestureRecognizer('dataset/')
-# obj.train(['user_3','user_4', 'user_5','user_6','user_7','user_9','user_10', 'user_11', 'user_12', 'user_13'])
-# obj.save_model()
-# obj.load_model()
-# # obj.recognize_gesture(['user_17','user_18', 'user_19'])
-# image = io.imread('dataset/user_17/A0.jpg')
-# print obj.recognize_gesture(image)
+if __name__ == "__main__":
+	obj = GestureRecognizer('dataset/')
+	obj.train(['user_3','user_4', 'user_5','user_6','user_7','user_9','user_10', 'user_11', 'user_12', 'user_13'])
+	obj.save_model(name="gr.gz")
